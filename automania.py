@@ -25,7 +25,6 @@ for x in range(worldsize):
     for y in range(worldsize):
         grid[x].insert(y, 0) #0 is blank
 
-
 #bg
 for h in range(1, -1, -1):
     for x in range(worldsize + 1):
