@@ -1,40 +1,22 @@
-from turtle import *
-import tkinter
-
-#setup
-penup()
-hideturtle()
-speed(0)
-bgcolor('#bbc0c8')
-worldsize = 8
+import tkinter as tk
+from PIL import Image, ImageTk
 
 scriptdir = __file__.replace(__file__.split('\\')[-1], '') #get the directory of the running script
 
-#window setup
-title('Automania')
-Screen().setup(width=1500, height=900) #set size of window
-Screen().cv._rootwindow.resizable(False, False) #lock size of window
-Screen()._root.iconphoto(True, tkinter.PhotoImage(file = scriptdir + 'icon.png')) #make icon for window
+root = tk.Tk()
+root.resizable(False, False)
+root.title('Automania')
+root.iconbitmap(scriptdir + 'icon.ico')
 
-#textures
-block = scriptdir + 'block.gif'
-addshape(block)
-bg = scriptdir + 'bg.gif'
-addshape(bg)
-maintitle = scriptdir + 'maintitle.gif'
-addshape(maintitle)
-settingsmenu = scriptdir + 'settingsmenu.gif'
-addshape(settingsmenu)
-tick = scriptdir + 'tick.gif'
-addshape(tick)
-exitcircle = scriptdir + 'exitcircle.gif'
-addshape(exitcircle)
-settingscircle = scriptdir + 'settingscircle.gif'
-addshape(settingscircle)
-treecircle = scriptdir + 'treecircle.gif'
-addshape(treecircle)
-drill = scriptdir + 'drill.gif'
-addshape(drill)
+canvas = tk.Canvas(root, width = 1500, height = 900, bg = '#8b9098')
+canvas.pack()
+
+bg = ImageTk.PhotoImage(Image.open(scriptdir + 'bg.png'))
+fg = ImageTk.PhotoImage(Image.open(scriptdir + 'block.png'))
+maintitle = ImageTk.PhotoImage(Image.open(scriptdir + 'maintitle.png'))
+settingscircle = ImageTk.PhotoImage(Image.open(scriptdir + 'settingscircle.png'))
+
+worldsize = 8
 
 #make world as list
 grid = []
@@ -43,83 +25,43 @@ for x in range(worldsize):
     for y in range(worldsize):
         grid[x].insert(y, 0) #0 is blank
 
-#bg
-def renbg():
-    shape(bg)
-    for h in range(2):
-        for x in range(worldsize + 1):
-            for y in range(worldsize + 1):
-                if (h == 0 and (x != worldsize and y != worldsize)): #render only seen tiles
-                    continue
-                gx = (x - y) * 32 #convert cartesian coords into iso coords
-                gy = (y + x) * 16 - (h * 32) #shift board down
-                goto(gx, gy - worldsize * 16)
-                stamp()
-    shape(maintitle) #menu / buttons
-    goto(0, window_height() // 2 - 96)
-    stamp()
-    shape(exitcircle)
-    goto(-window_width() // 2 + 72, window_height() // 2 - 72)
-    stamp()
-    shape(settingscircle)
-    goto(window_width() // 2 - 72, window_height() // 2 - 72)
-    stamp()
-    shape(treecircle)
-    goto(window_width() // 2 - 72, -window_height() // 2 + 80)
-    stamp()
-renbg()
-tracer(0)
 
-#fg
+#bg
+for h in range(1, -1, -1):
+    for x in range(worldsize + 1):
+        for y in range(worldsize + 1):
+            if (h == 1 and x != worldsize and y != worldsize): #render only seen tiles
+                continue
+            gx = 750 + (x - y) * 32 #convert cartesian coords into iso coords
+            gy = 750 - (y + x) * 16 - (h * 32) #shift board down
+            canvas.create_image(gx, gy - worldsize * 16, image = bg)
+
+def settingscmd():
+    print('h')
+
+canvas.create_window(1400, 800, window = tk.Button(root, image = settingscircle, command = settingscmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
+
 def render():
-    shape(block)
     for y in range(worldsize - 1, - 1, - 1): #render in reverse
         for x in range(worldsize - 1, - 1, - 1):
             if grid[x][y] == 0:
                 continue
-            gx = (x - y) * 32 #convert cartesian coords into iso coords
-            gy = (y + x) * 16 #shift board down
-            goto(gx, gy - worldsize * 16)
-            stamp()
+            gx = 750 + (x - y) * 32 #convert cartesian coords into iso coords
+            gy = 718 - (y + x) * 16 #shift board down
+            canvas.create_image(gx, gy - worldsize * 16, image = fg)
 
-#place
-def place(mx, my): #changes blocks
-    ix = int((mx // 32) + (my // 16) + worldsize) // 2 #convert to grid and adjust for board shift
-    iy = int((my // 16) - (mx // 32) + worldsize) // 2
-    if ix < 0 or iy < 0: #stop negatives
+canvas.create_image(750, 100, image = maintitle)
+#fg
+def place(mpos):
+    mpos.x -= 734
+    mpos.y = mpos.y - 484
+    ix = int((mpos.x // 32) + (-mpos.y // 16) + worldsize) // 2 #convert to grid and adjust for board shift
+    iy = int((-mpos.y // 16) - (mpos.x // 32) + worldsize) // 2
+    if ix < 0 or iy < 0:
         return
-    try: #avoid useless error messages
-        grid[ix][iy] = 1
-    except:
-        IndexError
+    grid[ix][iy] = 1
     render()
 
-settingsopen = False
-def hitboxcheck(mx, my): #define hitboxes
-    global settingsopen
-    goto(mx, my)
-    if distance(window_width() // 2 - 72, window_height() // 2 - 72) <= 64:
-        settingsopen = not settingsopen
-        if settingsopen:
-            shape(settingsmenu)
-            goto(0, 0)
-            stamp()
-            if distance(-214, -116) <= 32:
-                print(grid) #export grid
-            elif distance(-142, -116) <= 32:
-                () #import grid
-        if not settingsopen:
-            clear()
-            renbg()
-            render()
-    elif distance(window_width() // 2 - 72, -window_height() // 2 + 80) <= 64:
-        () #open skill tree
-    elif distance(-window_width() // 2 + 72, window_height() // 2 - 72) <= 64:
-        bye() #close window
-    else:
-        place(mx, my)
+root.bind('<Button-1>', place)
 
-Screen().onscreenclick(hitboxcheck)
-
-#continue to run (temporary)
-mainloop()
+root.mainloop()
