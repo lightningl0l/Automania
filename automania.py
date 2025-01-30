@@ -15,6 +15,8 @@ bg = ImageTk.PhotoImage(Image.open(scriptdir + 'bg.png'))
 fg = ImageTk.PhotoImage(Image.open(scriptdir + 'block.png'))
 maintitle = ImageTk.PhotoImage(Image.open(scriptdir + 'maintitle.png'))
 settingscircle = ImageTk.PhotoImage(Image.open(scriptdir + 'settingscircle.png'))
+treecircle = ImageTk.PhotoImage(Image.open(scriptdir + 'treecircle.png'))
+settingsmenu = ImageTk.PhotoImage(Image.open(scriptdir + 'settingsmenu.png'))
 
 worldsize = 8
 
@@ -35,32 +37,51 @@ for h in range(1, -1, -1):
             gy = 750 - (y + x) * 16 - (h * 32) #shift board down
             canvas.create_image(gx, gy - worldsize * 16, image = bg)
 
+#buttons
+menuopen = False
 def settingscmd():
-    print('h')
+    global menuopen
+    menuopen = not menuopen
+    if menuopen:
+        canvas.create_image(750, 450, image = settingsmenu, tags = 'menu')
+    else:
+        canvas.delete('menu')
+def treecmd():
+    global menuopen
+    menuopen = True
+    print('treebutton')
 
 canvas.create_window(1400, 800, window = tk.Button(root, image = settingscircle, command = settingscmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
+canvas.create_window(100, 800, window = tk.Button(root, image = treecircle, command = treecmd, bg = '#8b9098', bd = 0, activebackground = '#8b9090'))
+canvas.create_image(750, 100, image = maintitle)
 
+#active block rendering
 def render():
+    canvas.delete('block')
     for y in range(worldsize - 1, - 1, - 1): #render in reverse
         for x in range(worldsize - 1, - 1, - 1):
             if grid[x][y] == 0:
                 continue
             gx = 750 + (x - y) * 32 #convert cartesian coords into iso coords
             gy = 718 - (y + x) * 16 #shift board down
-            canvas.create_image(gx, gy - worldsize * 16, image = fg)
+            canvas.create_image(gx, gy - worldsize * 16, image = fg, tag = 'block')
 
-canvas.create_image(750, 100, image = maintitle)
 #fg
-def place(mpos):
-    mpos.x -= 734
-    mpos.y = mpos.y - 484
-    ix = int((mpos.x // 32) + (-mpos.y // 16) + worldsize) // 2 #convert to grid and adjust for board shift
-    iy = int((-mpos.y // 16) - (mpos.x // 32) + worldsize) // 2
-    if ix < 0 or iy < 0:
-        return
-    grid[ix][iy] = 1
-    render()
-
-root.bind('<Button-1>', place)
+def hitbox(mpos):
+    if not menuopen:
+        mpos.x -= 734
+        mpos.y = mpos.y - 484
+        ix = int((mpos.x // 32) + (-mpos.y // 16) + worldsize) // 2 #convert to grid and adjust for board shift
+        iy = int((-mpos.y // 16) - (mpos.x // 32) + worldsize) // 2
+        if ix < 0 or iy < 0:
+            return
+        grid[ix][iy] = 1
+        render()
+    else:
+        if ((mpos.x - 537) * (mpos.x - 537)) + ((mpos.y - 567) * (mpos.y - 567)) <= 1048:
+            print('export button not done yet')
+        elif ((mpos.x - 609) * (mpos.x - 609)) + ((mpos.y - 567) * (mpos.y - 567)) <= 1048:
+            print('import button not done yet')
+root.bind('<Button-1>', hitbox)
 
 root.mainloop()
