@@ -17,6 +17,7 @@ sqrlight = ImageTk.PhotoImage(Image.open(scriptdir + 'sqrlight.png'))
 sqrtall = ImageTk.PhotoImage(Image.open(scriptdir + 'sqrtall.png'))
 sqrcoolant = ImageTk.PhotoImage(Image.open(scriptdir + 'sqrcoolant.png'))
 tick = ImageTk.PhotoImage(Image.open(scriptdir + 'tick.png'))
+delete = ImageTk.PhotoImage(Image.open(scriptdir + 'delete.png'))
 drill = ImageTk.PhotoImage(Image.open(scriptdir + 'drill.png'))
 pump = ImageTk.PhotoImage(Image.open(scriptdir + 'pump.png'))
 smelter = ImageTk.PhotoImage(Image.open(scriptdir + 'smelter.png'))
@@ -150,6 +151,11 @@ def pumpbuttoncmd():
     placement = 8
     canvas.delete('bganim')
     canvas.create_image(900, 790, image = lining, tags = 'bganim')
+def deletebuttoncmd():
+    global placement
+    placement = 0
+    canvas.delete('bganim')
+    canvas.create_image(1000, 750, image = lining, tags = 'bganim')
 
 canvas.create_window(1400, 800, window = tk.Button(root, image = settingscircle, command = settingscmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
 canvas.create_window(100, 800, window = tk.Button(root, image = treecircle, command = treecmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
@@ -162,6 +168,7 @@ canvas.create_window(600, 790, window = tk.Button(root, image = conveyor1, comma
 canvas.create_window(700, 790, window = tk.Button(root, image = arm1, command = armbuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
 canvas.create_window(800, 790, window = tk.Button(root, image = pipe, command = pipebuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
 canvas.create_window(900, 790, window = tk.Button(root, image = pump, command = pumpbuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
+canvas.create_window(1000, 750, window = tk.Button(root, image = delete, command = deletebuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
 canvas.create_image(750, 100, image = maintitle)
 
 #block rendering
@@ -183,6 +190,8 @@ def hitbox(mpos):
         ix = int((mpos.x // 32) + (-mpos.y // 16) + worldsize) // 2 #convert to grid and adjust for board shift
         iy = int((-mpos.y // 16) - (mpos.x // 32) + worldsize) // 2
         if ix < 0 or iy < 0:
+            return
+        if placement != 0 and grid[ix][iy] != 0:
             return
         grid[ix][iy] = placement
         render()
@@ -252,6 +261,6 @@ def hitbox(mpos):
                 skills[11] = 1
                 treecmd()
                 treecmd()
-root.bind('<Button-1>', hitbox)
 
+root.bind('<Button-1>', hitbox)
 root.mainloop()
