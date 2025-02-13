@@ -1,38 +1,39 @@
 import tkinter as tk
 from PIL import Image, ImageTk
+from threading import *
 
 scriptdir = __file__.replace(__file__.split('\\')[-1], '') #get the directory of the running script
 
 root = tk.Tk()
 root.resizable(False, False)
 root.title('Automania')
-root.iconbitmap(scriptdir + 'icon.ico')
+root.iconbitmap(scriptdir + 'txr\\icon.ico')
 
 canvas = tk.Canvas(root, width = 1500, height = 900, bg = '#8b9098')
 canvas.pack()
 
-bg = ImageTk.PhotoImage(Image.open(scriptdir + 'bg.png'))
-lining = ImageTk.PhotoImage(Image.open(scriptdir + 'lining.png'))
-sqrlight = ImageTk.PhotoImage(Image.open(scriptdir + 'sqrlight.png'))
-sqrtall = ImageTk.PhotoImage(Image.open(scriptdir + 'sqrtall.png'))
-sqrcoolant = ImageTk.PhotoImage(Image.open(scriptdir + 'sqrcoolant.png'))
-tick = ImageTk.PhotoImage(Image.open(scriptdir + 'tick.png'))
-delete = ImageTk.PhotoImage(Image.open(scriptdir + 'delete.png'))
-drill = ImageTk.PhotoImage(Image.open(scriptdir + 'drill.png'))
-pump = ImageTk.PhotoImage(Image.open(scriptdir + 'pump.png'))
-smelter = ImageTk.PhotoImage(Image.open(scriptdir + 'smelter.png'))
-press = ImageTk.PhotoImage(Image.open(scriptdir + 'press.png'))
-conveyor1 = ImageTk.PhotoImage(Image.open(scriptdir + 'conveyor1.png'))
-arm1 = ImageTk.PhotoImage(Image.open(scriptdir + 'arm1.png'))
-pipe = ImageTk.PhotoImage(Image.open(scriptdir + 'pipe.png'))
-sell = ImageTk.PhotoImage(Image.open(scriptdir + 'sell.png'))
-maintitle = ImageTk.PhotoImage(Image.open(scriptdir + 'maintitle.png'))
-settingscircle = ImageTk.PhotoImage(Image.open(scriptdir + 'settingscircle.png'))
-treecircle = ImageTk.PhotoImage(Image.open(scriptdir + 'treecircle.png'))
-exitcircle = ImageTk.PhotoImage(Image.open(scriptdir + 'exitcircle.png'))
-settingsmenu = ImageTk.PhotoImage(Image.open(scriptdir + 'settingsmenu.png'))
-treemenu = ImageTk.PhotoImage(Image.open(scriptdir + 'treemenu.png'))
-recipes1 = ImageTk.PhotoImage(Image.open(scriptdir + 'recipes1.png'))
+bg = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\bg.png'))
+lining = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\lining.png'))
+sqrlight = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\sqrlight.png'))
+sqrtall = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\sqrtall.png'))
+sqrcoolant = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\sqrcoolant.png'))
+tick = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\tick.png'))
+delete = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\delete.png'))
+drill = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\drill.png'))
+pump = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\pump.png'))
+smelter = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\smelter.png'))
+press = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\press.png'))
+conveyor1 = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\conveyor1.png'))
+arm1 = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\arm1.png'))
+pipe = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\pipe.png'))
+sell = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\sell.png'))
+maintitle = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\maintitle.png'))
+settingscircle = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\settingscircle.png'))
+treecircle = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\treecircle.png'))
+exitcircle = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\exitcircle.png'))
+settingsmenu = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\settingsmenu.png'))
+treemenu = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\treemenu.png'))
+recipes1 = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\recipes1.png'))
 
 blocks = {1 : drill, 2 : smelter, 3 : press, 4 : sell, 5 : conveyor1, 6 : arm1, 7 : pipe, 8 : pump}
 worldsize = 8
@@ -46,6 +47,7 @@ for x in range(worldsize):
         grid[x].insert(y, 0) #0 is blank
 
 skills = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+inventories = [] #to be filled with inventory coordinates
 
 #bg
 for h in range(1, -1, -1):
@@ -57,7 +59,7 @@ for h in range(1, -1, -1):
             gy = 700 - (y + x) * 16 - (h * 32) #shift board down
             canvas.create_image(gx, gy - worldsize * 16, image = bg)
 
-#buttons
+#region buttons
 menuopen = 0
 placement = 0
 def settingscmd():
@@ -170,6 +172,7 @@ canvas.create_window(800, 790, window = tk.Button(root, image = pipe, command = 
 canvas.create_window(900, 790, window = tk.Button(root, image = pump, command = pumpbuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
 canvas.create_window(1000, 750, window = tk.Button(root, image = delete, command = deletebuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
 canvas.create_image(750, 100, image = maintitle)
+#endregion
 
 #block rendering
 def render():
@@ -181,6 +184,7 @@ def render():
             gx = 750 + (x - y) * 32 #convert cartesian coords into iso coords
             gy = 668 - (y + x) * 16 #shift board down
             canvas.create_image(gx, gy - worldsize * 16, image = blocks[grid[x][y]], tag = 'block')
+    
 
 #fg
 def hitbox(mpos):
@@ -212,7 +216,7 @@ def hitbox(mpos):
                     canvas.delete('tick')
             elif 506 <= mpos.x <= 553 and 397 <= mpos.y <= 444: #toggle leaderboard
                 print('toggle leaderboard not done yet')
-        if menuopen == 2:
+        if menuopen == 2: #skill tree buttons
             if 294 <= mpos.x <= 385 and 519 <= mpos.y <= 615:
                 skills[0] = 1
                 treecmd()
