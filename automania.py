@@ -46,8 +46,18 @@ for x in range(worldsize):
     for y in range(worldsize):
         grid[x].insert(y, 0) #0 is blank
 
+ores = [
+[0, 4, 4, 1, 1, 0, 0, 0], 
+[0, 4, 4, 0, 0, 0, 5, 5], 
+[0, 0, 0, 0, 0, 3, 3, 5], 
+[4, 0, 0, 0, 0, 3, 3, 0], 
+[4, 0, 0, 3, 3, 0, 0, 0], 
+[2, 2, 0, 3, 3, 0, 0, 0], 
+[2, 2, 0, 0, 0, 0, 1, 1], 
+[0, 0, 0, 0, 0, 0, 1, 1]]
 skills = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-inventories = [] #to be filled with inventory coordinates
+inventories = [] #to be filled with block inventory coordinates
+items = grid.copy()
 
 #bg
 for h in range(1, -1, -1):
@@ -177,6 +187,7 @@ canvas.create_image(750, 100, image = maintitle)
 #block rendering
 def render():
     canvas.delete('block')
+    inventories.clear()
     for y in range(worldsize - 1, - 1, - 1): #render in reverse
         for x in range(worldsize - 1, - 1, - 1):
             if grid[x][y] == 0:
@@ -184,87 +195,103 @@ def render():
             gx = 750 + (x - y) * 32 #convert cartesian coords into iso coords
             gy = 668 - (y + x) * 16 #shift board down
             canvas.create_image(gx, gy - worldsize * 16, image = blocks[grid[x][y]], tag = 'block')
-    
+        for n in range(len(grid[y])):
+            if grid[y][n] == 1 or grid[y][n] == 5:
+                inventories.append((y, n))
 
 #fg
 def hitbox(mpos):
-    if menuopen == 0:
-        mpos.x -= 734
-        mpos.y = mpos.y - 434
-        ix = int((mpos.x // 32) + (-mpos.y // 16) + worldsize) // 2 #convert to grid and adjust for board shift
-        iy = int((-mpos.y // 16) - (mpos.x // 32) + worldsize) // 2
-        if ix < 0 or iy < 0:
-            return
-        if placement != 0 and grid[ix][iy] != 0:
-            return
-        grid[ix][iy] = placement
-        render()
-    else: #pythagoras will be used to check distance from a point
-        if menuopen == 1: #check if settings are open
-            if ((mpos.x - 537) * (mpos.x - 537)) + ((mpos.y - 567) * (mpos.y - 567)) <= 1048: #export button
-                print('export button not done yet')
-            elif ((mpos.x - 609) * (mpos.x - 609)) + ((mpos.y - 567) * (mpos.y - 567)) <= 1048: #import button
-                print('import button not done yet')
-            elif 506 <= mpos.x <= 553 and 325 <= mpos.y <= 372: #toggle recipes
-                global recipeson
-                recipeson = not recipeson
-                if recipeson == True:
-                    canvas.create_image(224, 450, image = recipes1, tags = 'recipes')
-                    canvas.create_image(530, 349, image = tick, tags = ('tick', 'menu'))
-                else:
-                    canvas.delete('recipes')
-                    canvas.delete('tick')
-            elif 506 <= mpos.x <= 553 and 397 <= mpos.y <= 444: #toggle leaderboard
-                print('toggle leaderboard not done yet')
-        if menuopen == 2: #skill tree buttons
-            if 294 <= mpos.x <= 385 and 519 <= mpos.y <= 615:
-                skills[0] = 1
-                treecmd()
-                treecmd()
-            elif 528 <= mpos.x <= 619 and 134 <= mpos.y <= 304:
-                skills[1] = 1
-                treecmd()
-                treecmd()
-            elif 528 <= mpos.x <= 619 and 519 <= mpos.y <= 615 and skills[0] == 1:
-                skills[2] = 1
-                treecmd()
-                treecmd()
-            elif 702 <= mpos.x <= 788 and 364 <= mpos.y <= 460 and skills[1] == 1 and skills[2] == 1:
-                skills[3] = 1
-                treecmd()
-                treecmd()
-            elif 906 <= mpos.x <= 997 and 55 <= mpos.y <= 151 and skills[3] == 1:
-                skills[4] = 1
-                treecmd()
-                treecmd()
-            elif 906 <= mpos.x <= 997 and 287 <= mpos.y <= 383 and skills[3] == 1:
-                skills[5] = 1
-                treecmd()
-                treecmd()
-            elif 906 <= mpos.x <= 997 and 519 <= mpos.y <= 615 and skills[3] == 1:
-                skills[6] = 1
-                treecmd()
-                treecmd()
-            elif 1052 <= mpos.x <= 1143 and 55 <= mpos.y <= 151 and skills[4] == 1:
-                skills[7] = 1
-                treecmd()
-                treecmd()
-            elif 1052 <= mpos.x <= 1143 and 171 <= mpos.y <= 267 and skills[4] == 1 and skills[5] == 1:
-                skills[8] = 1
-                treecmd()
-                treecmd()
-            elif 1052 <= mpos.x <= 1143 and 287 <= mpos.y <= 383 and skills[5] == 1:
-                skills[9] = 1
-                treecmd()
-                treecmd()
-            elif 1052 <= mpos.x <= 1143 and 403 <= mpos.y <= 499 and skills[11] == 1:
-                skills[10] = 1
-                treecmd()
-                treecmd()
-            elif 1052 <= mpos.x <= 1143 and 519 <= mpos.y <= 615 and skills[6] == 1:
-                skills[11] = 1
-                treecmd()
-                treecmd()
+    try:
+        if menuopen == 0:
+            mpos.x -= 734
+            mpos.y = mpos.y - 434
+            ix = int((mpos.x // 32) + (-mpos.y // 16) + worldsize) // 2 #convert to grid and adjust for board shift
+            iy = int((-mpos.y // 16) - (mpos.x // 32) + worldsize) // 2
+            if ix < 0 or iy < 0:
+                return
+            if placement != 0 and grid[ix][iy] != 0:
+                return
+            grid[ix][iy] = placement
+            render()
+        else: #pythagoras will be used to check distance from a point
+            if menuopen == 1: #check if settings are open
+                if ((mpos.x - 537) * (mpos.x - 537)) + ((mpos.y - 567) * (mpos.y - 567)) <= 1048: #export button
+                    print('export button not done yet')
+                    itemlogic()
+                elif ((mpos.x - 609) * (mpos.x - 609)) + ((mpos.y - 567) * (mpos.y - 567)) <= 1048: #import button
+                    print('import button not done yet')
+                elif 506 <= mpos.x <= 553 and 325 <= mpos.y <= 372: #toggle recipes
+                    global recipeson
+                    recipeson = not recipeson
+                    if recipeson == True:
+                        canvas.create_image(224, 450, image = recipes1, tags = 'recipes')
+                        canvas.create_image(530, 349, image = tick, tags = ('tick', 'menu'))
+                    else:
+                        canvas.delete('recipes')
+                        canvas.delete('tick')
+                elif 506 <= mpos.x <= 553 and 397 <= mpos.y <= 444: #toggle leaderboard
+                    print('toggle leaderboard not done yet')
+            if menuopen == 2: #skill tree buttons
+                if 294 <= mpos.x <= 385 and 519 <= mpos.y <= 615:
+                    skills[0] = 1
+                    treecmd()
+                    treecmd()
+                elif 528 <= mpos.x <= 619 and 134 <= mpos.y <= 304:
+                    skills[1] = 1
+                    treecmd()
+                    treecmd()
+                elif 528 <= mpos.x <= 619 and 519 <= mpos.y <= 615 and skills[0] == 1:
+                    skills[2] = 1
+                    treecmd()
+                    treecmd()
+                elif 702 <= mpos.x <= 788 and 364 <= mpos.y <= 460 and skills[1] == 1 and skills[2] == 1:
+                    skills[3] = 1
+                    treecmd()
+                    treecmd()
+                elif 906 <= mpos.x <= 997 and 55 <= mpos.y <= 151 and skills[3] == 1:
+                    skills[4] = 1
+                    treecmd()
+                    treecmd()
+                elif 906 <= mpos.x <= 997 and 287 <= mpos.y <= 383 and skills[3] == 1:
+                    skills[5] = 1
+                    treecmd()
+                    treecmd()
+                elif 906 <= mpos.x <= 997 and 519 <= mpos.y <= 615 and skills[3] == 1:
+                    skills[6] = 1
+                    treecmd()
+                    treecmd()
+                elif 1052 <= mpos.x <= 1143 and 55 <= mpos.y <= 151 and skills[4] == 1:
+                    skills[7] = 1
+                    treecmd()
+                    treecmd()
+                elif 1052 <= mpos.x <= 1143 and 171 <= mpos.y <= 267 and skills[4] == 1 and skills[5] == 1:
+                    skills[8] = 1
+                    treecmd()
+                    treecmd()
+                elif 1052 <= mpos.x <= 1143 and 287 <= mpos.y <= 383 and skills[5] == 1:
+                    skills[9] = 1
+                    treecmd()
+                    treecmd()
+                elif 1052 <= mpos.x <= 1143 and 403 <= mpos.y <= 499 and skills[11] == 1:
+                    skills[10] = 1
+                    treecmd()
+                    treecmd()
+                elif 1052 <= mpos.x <= 1143 and 519 <= mpos.y <= 615 and skills[6] == 1:
+                    skills[11] = 1
+                    treecmd()
+                    treecmd()
+    except IndexError:
+        ()
+
+def itemlogic():
+    for i in range(len(inventories)):
+        x, y = inventories[i]
+        if (x + 1 < worldsize and ores[x + 1][y] != 0) or \
+           (x - 1 >= 0 and ores[x - 1][y] != 0) or \
+           (y + 1 < worldsize and ores[x][y + 1] != 0) or \
+           (y - 1 >= 0 and ores[x][y - 1] != 0):
+            items[x][y] = ores[x][y]
+            print(items)
 
 root.bind('<Button-1>', hitbox)
 root.mainloop()
