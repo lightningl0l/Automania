@@ -2,22 +2,26 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from threading import *
 
-scriptdir = __file__.replace(__file__.split('\\')[-1], '') #get the directory of the running script
+scriptdir = __file__.replace(__file__.split('\\')[-1], '') #get the directory of the file
 
+#make the window
 root = tk.Tk()
 root.resizable(False, False)
 root.title('Automania')
 root.iconbitmap(scriptdir + 'txr\\icon.ico')
 
+#make the background and working area
 canvas = tk.Canvas(root, width = 1500, height = 900, bg = '#8b9098')
 canvas.pack()
 
+#define all the images
 bg = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\bg.png'))
 lining = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\lining.png'))
 sqrlight = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\sqrlight.png'))
 sqrtall = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\sqrtall.png'))
 sqrcoolant = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\sqrcoolant.png'))
 tick = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\tick.png'))
+parcel = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\parcel.png'))
 delete = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\delete.png'))
 drill = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\drill.png'))
 pump = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\pump.png'))
@@ -46,7 +50,7 @@ for x in range(worldsize):
     for y in range(worldsize):
         grid[x].insert(y, 0) #0 is blank
 
-ores = [
+ores = [ #temporary ore placement
 [0, 4, 4, 1, 1, 0, 0, 0], 
 [0, 4, 4, 0, 0, 0, 5, 5], 
 [0, 0, 0, 0, 0, 3, 3, 5], 
@@ -55,9 +59,9 @@ ores = [
 [2, 2, 0, 3, 3, 0, 0, 0], 
 [2, 2, 0, 0, 0, 0, 1, 1], 
 [0, 0, 0, 0, 0, 0, 1, 1]]
-skills = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+skills = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] #skill tree
 inventories = [] #to be filled with block inventory coordinates
-items = grid.copy()
+items = grid.copy() #used to see item inside inventories
 
 #bg
 for h in range(1, -1, -1):
@@ -196,7 +200,7 @@ def render():
             gy = 668 - (y + x) * 16 #shift board down
             canvas.create_image(gx, gy - worldsize * 16, image = blocks[grid[x][y]], tag = 'block')
         for n in range(len(grid[y])):
-            if grid[y][n] == 1 or grid[y][n] == 5:
+            if grid[y][n] in (1, 5):
                 inventories.append((y, n))
 
 #fg
@@ -209,7 +213,7 @@ def hitbox(mpos):
             iy = int((-mpos.y // 16) - (mpos.x // 32) + worldsize) // 2
             if ix < 0 or iy < 0:
                 return
-            if placement != 0 and grid[ix][iy] != 0:
+            if placement != 0 and grid[ix][iy] != 0: #prevent blocks from being placed on top of eachother
                 return
             grid[ix][iy] = placement
             render()
@@ -217,7 +221,6 @@ def hitbox(mpos):
             if menuopen == 1: #check if settings are open
                 if ((mpos.x - 537) * (mpos.x - 537)) + ((mpos.y - 567) * (mpos.y - 567)) <= 1048: #export button
                     print('export button not done yet')
-                    itemlogic()
                 elif ((mpos.x - 609) * (mpos.x - 609)) + ((mpos.y - 567) * (mpos.y - 567)) <= 1048: #import button
                     print('import button not done yet')
                 elif 506 <= mpos.x <= 553 and 325 <= mpos.y <= 372: #toggle recipes
@@ -284,14 +287,13 @@ def hitbox(mpos):
         ()
 
 def itemlogic():
-    for i in range(len(inventories)):
+    for i in range(len(inventories)): #check if two inventories are next to eachother
         x, y = inventories[i]
         if (x + 1 < worldsize and ores[x + 1][y] != 0) or \
            (x - 1 >= 0 and ores[x - 1][y] != 0) or \
            (y + 1 < worldsize and ores[x][y + 1] != 0) or \
            (y - 1 >= 0 and ores[x][y - 1] != 0):
             items[x][y] = ores[x][y]
-            print(items)
 
 root.bind('<Button-1>', hitbox)
 root.mainloop()
