@@ -9,12 +9,10 @@ root = tk.Tk()
 root.resizable(False, False)
 root.title('Automania')
 root.iconbitmap(scriptdir + 'txr\\icon.ico')
-
-#make the background and working area
 canvas = tk.Canvas(root, width = 1500, height = 900, bg = '#8b9098')
 canvas.pack()
 
-#define all the images
+#images
 bg = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\bg.png'))
 lining = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\lining.png'))
 sqrlight = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\sqrlight.png'))
@@ -46,19 +44,17 @@ recipeson = False
 #make world as list
 grid = []
 for x in range(worldsize):
-    grid.insert(x, []) #make lists
+    grid.insert(x, []) #make x line lists
     for y in range(worldsize):
         grid[x].insert(y, 0) #0 is blank
 
-items = grid.copy() #items blocks contain
-movement = [] #coords of conveyors, arms, pipes
 skills = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] #skill tree
 
 #bg
 for h in range(1, -1, -1):
     for x in range(worldsize + 1):
         for y in range(worldsize + 1):
-            if (h == 1 and x != worldsize and y != worldsize): #render only seen tiles
+            if (h == 1 and x != worldsize and y != worldsize): #render only "seen" tiles
                 continue
             gx = 750 + (x - y) * 32 #convert cartesian coords into iso coords
             gy = 700 - (y + x) * 16 - (h * 32) #shift board down
@@ -164,6 +160,7 @@ def deletebuttoncmd():
     canvas.delete('bganim')
     canvas.create_image(1000, 750, image = lining, tags = 'bganim')
 
+canvas.create_image(750, 100, image = maintitle)
 canvas.create_window(1400, 800, window = tk.Button(root, image = settingscircle, command = settingscmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
 canvas.create_window(100, 800, window = tk.Button(root, image = treecircle, command = treecmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
 canvas.create_window(100, 100, window = tk.Button(root, image = exitcircle, command = exitcmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
@@ -176,13 +173,11 @@ canvas.create_window(700, 790, window = tk.Button(root, image = arm1, command = 
 canvas.create_window(800, 790, window = tk.Button(root, image = pipe, command = pipebuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
 canvas.create_window(900, 790, window = tk.Button(root, image = pump, command = pumpbuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
 canvas.create_window(1000, 750, window = tk.Button(root, image = delete, command = deletebuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
-canvas.create_image(750, 100, image = maintitle)
 #endregion
 
 #block rendering
 def render():
     canvas.delete('block')
-    movement.clear()
     for y in range(worldsize - 1, - 1, - 1): #render in reverse
         for x in range(worldsize - 1, - 1, - 1):
             if grid[x][y] == 0:
@@ -190,17 +185,7 @@ def render():
             gx = 750 + (x - y) * 32 #convert cartesian coords into iso coords
             gy = 668 - (y + x) * 16 #shift board down
             canvas.create_image(gx, gy - worldsize * 16, image = blocks[grid[x][y]], tag = 'block')
-        for i in range(len(grid[y])): #track movement blocks
-            if grid[y][i] in (5, 6, 7):
-               movement.append((i, y))
-    for y in range(worldsize - 1, - 1, - 1): #place parcels (temporary)
-        for x in range(worldsize - 1, - 1, - 1):
-            for i in movement:
-                x, y = i
-                gx = 750 - (x - y) * 32 #convert cartesian coords into iso coords
-                gy = 668 - (y + x) * 16 #shift board down
-                canvas.create_image(gx, gy - worldsize * 16, image = parcel, tag = 'block')
-
+            
 #fg
 def hitbox(mpos):
     if menuopen == 0:
@@ -216,7 +201,7 @@ def hitbox(mpos):
             grid[ix][iy] = placement
             render()
         except IndexError:
-            ()
+            () #used to shut up meaningless errors
     else: #pythagoras will be used to check distance from a point (buttons in menus)
         if menuopen == 1: #check if settings are open
             if ((mpos.x - 537) * (mpos.x - 537)) + ((mpos.y - 567) * (mpos.y - 567)) <= 1048: #export button
