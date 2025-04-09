@@ -1,5 +1,4 @@
 import tkinter as tk
-from PIL import Image, ImageTk
 from threading import *
 
 #variables
@@ -24,11 +23,11 @@ canvas.pack()
 #region images
 
 #title
-maintitle = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\maintitle.png'))
+maintitle = tk.PhotoImage(file = scriptdir + 'txr\\maintitle.png')
 canvas.create_image(750, 100, image = maintitle)
 
 #background
-bg = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\bg.png'))
+bg = tk.PhotoImage(file = scriptdir + 'txr\\bg.png')
 for h in range(1, -1, -1):
     for x in range(worldsize + 1):
         for y in range(worldsize + 1):
@@ -39,32 +38,32 @@ for h in range(1, -1, -1):
             canvas.create_image(gx, gy - worldsize * 16, image = bg)
 
 #blocks
-drill = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\drill.png'))
-pump = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\pump.png'))
-smelter = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\smelter.png'))
-press = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\press.png'))
-conveyor1 = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\conveyor1.png'))
-arm1 = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\arm1.png'))
-pipe = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\pipe.png'))
-sell = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\sell.png'))
+drill = tk.PhotoImage(file = scriptdir + 'txr\\drill.png')
+pump = tk.PhotoImage(file = scriptdir + 'txr\\pump.png')
+smelter = tk.PhotoImage(file = scriptdir + 'txr\\smelter.png')
+press = tk.PhotoImage(file = scriptdir + 'txr\\press.png')
+conveyor1 = tk.PhotoImage(file = scriptdir + 'txr\\conveyor1.png')
+arm1 = tk.PhotoImage(file = scriptdir + 'txr\\arm1.png')
+pipe = tk.PhotoImage(file = scriptdir + 'txr\\pipe.png')
+sell = tk.PhotoImage(file = scriptdir + 'txr\\sell.png')
 blocks = {1 : drill, 2 : smelter, 3 : press, 4 : sell, 5 : conveyor1, 6 : arm1, 7 : pipe, 8 : pump} #dict for blocks
-delete = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\delete.png'))
-lining = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\lining.png'))
-parcel = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\parcel.png'))
+delete = tk.PhotoImage(file = scriptdir + 'txr\\delete.png')
+lining = tk.PhotoImage(file = scriptdir + 'txr\\lining.png')
+parcel = tk.PhotoImage(file = scriptdir + 'txr\\parcel.png')
 
 #meuns
-treemenu = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\treemenu.png'))
-recipes1 = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\recipes1.png'))
-sqrlight = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\sqrlight.png'))
-sqrtall = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\sqrtall.png'))
-sqrcoolant = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\sqrcoolant.png'))
-tick = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\tick.png'))
+treemenu = tk.PhotoImage(file = scriptdir + 'txr\\treemenu.png')
+recipes1 = tk.PhotoImage(file = scriptdir + 'txr\\recipes1.png')
+sqrlight = tk.PhotoImage(file = scriptdir + 'txr\\sqrlight.png')
+sqrtall = tk.PhotoImage(file = scriptdir + 'txr\\sqrtall.png')
+sqrcoolant = tk.PhotoImage(file = scriptdir + 'txr\\sqrcoolant.png')
+tick = tk.PhotoImage(file = scriptdir + 'txr\\tick.png')
 
 #buttons
-settingscircle = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\settingscircle.png'))
-treecircle = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\treecircle.png'))
-exitcircle = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\exitcircle.png'))
-settingsmenu = ImageTk.PhotoImage(Image.open(scriptdir + 'txr\\settingsmenu.png'))
+settingscircle = tk.PhotoImage(file = scriptdir + 'txr\\settingscircle.png')
+treecircle = tk.PhotoImage(file = scriptdir + 'txr\\treecircle.png')
+exitcircle = tk.PhotoImage(file = scriptdir + 'txr\\exitcircle.png')
+settingsmenu = tk.PhotoImage(file = scriptdir + 'txr\\settingsmenu.png')
 #endregion
 
 #region buttons
