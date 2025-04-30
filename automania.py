@@ -58,7 +58,8 @@ sqrlight = tk.PhotoImage(file = scriptdir + 'txr\\sqrlight.png')
 sqrtall = tk.PhotoImage(file = scriptdir + 'txr\\sqrtall.png')
 sqrcoolant = tk.PhotoImage(file = scriptdir + 'txr\\sqrcoolant.png')
 tick = tk.PhotoImage(file = scriptdir + 'txr\\tick.png')
-treebuttons = {0 : ((342, 571), (sqrlight, smelter)), 1 : ((576, 223), (sqrtall,)), 2 : ((576, 571), (sqrlight, press)), 3 : ((750, 416), (sqrcoolant,)), 4 : ((954, 107), (sqrlight, arm1)), 5 : ((954, 339), (sqrlight,)), 6 : ((954, 571), (sqrlight,)), 7 : ((1100, 107), (sqrlight,)), 8 : ((1100, 223), (sqrlight,)), 9 : ((1100, 339), (sqrlight,)), 10 : ((1100, 451), (sqrlight,)), 11 : ((1100, 571), (sqrlight,))}
+treeimgs = {0 : ((342, 571), (sqrlight, smelter)), 1 : ((576, 223), (sqrtall,)), 2 : ((576, 571), (sqrlight, press)), 3 : ((750, 416), (sqrcoolant,)), 4 : ((954, 107), (sqrlight, arm1)), 5 : ((954, 339), (sqrlight,)), 6 : ((954, 571), (sqrlight,)), 7 : ((1100, 107), (sqrlight,)), 8 : ((1100, 223), (sqrlight,)), 9 : ((1100, 339), (sqrlight,)), 10 : ((1100, 451), (sqrlight,)), 11 : ((1100, 571), (sqrlight,))}
+treeButtons = {0 : ((294, 385, 519, 615), ()), 1 : ((528, 619, 134, 304), ()), 2 : ((528, 619, 519, 615), (0,)), 3 : ((702, 788, 364, 460), (1, 2)), 4 : ((906, 997, 55, 151), (3,)), 5 : ((906, 997, 287, 383), (3,)), 6 : ((906, 997, 519, 615), (3,)), 7 : ((1052, 1143, 55, 151), (4,)), 8 : ((1052, 1143, 171, 267), (4, 5)), 9 : ((1052, 1143, 287, 383), (5,)), 10 : ((1052, 1143, 403, 499), (11,)), 11 : ((1052, 1143, 519, 615), (6,))}
 
 #buttons
 settingscircle = tk.PhotoImage(file = scriptdir + 'txr\\settingscircle.png')
@@ -83,17 +84,17 @@ def settingscmd():
     else:
         canvas.delete('menu')
 def treecmd():
-    global menuopen, skills, treebuttons
+    global menuopen, skills, treeimgs
     if menuopen == 0:
         menuopen = 2
     else:
         menuopen = 0
     if menuopen == 2:
         canvas.create_image(750, 338, image = treemenu, tags = 'menu')
-        for i in range(len(treebuttons)):
-            if skills[i]:
-                for n in range(len(treebuttons[i][1])):
-                    canvas.create_image(treebuttons[i][0][0], treebuttons[i][0][1], image = treebuttons[i][1][n], tags = 'menu')
+        for i in range(len(treeimgs)):
+            if skills[i] == 1:
+                for n in range(len(treeimgs[i][1])):
+                    canvas.create_image(treeimgs[i][0][0], treeimgs[i][0][1], image = treeimgs[i][1][n], tags = 'menu')
     else:
         canvas.delete('menu')
 def exitcmd():
@@ -203,54 +204,18 @@ def hitbox(mpos):
             elif 506 <= mpos.x <= 553 and 397 <= mpos.y <= 444: #toggle leaderboard
                 print('toggle leaderboard not done yet')
         if menuopen == 2: #skill tree buttons
-            if 294 <= mpos.x <= 385 and 519 <= mpos.y <= 615:
-                skills[0] = 1
-                treecmd()
-                treecmd()
-            elif 528 <= mpos.x <= 619 and 134 <= mpos.y <= 304:
-                skills[1] = 1
-                treecmd()
-                treecmd()
-            elif 528 <= mpos.x <= 619 and 519 <= mpos.y <= 615 and skills[0] == 1:
-                skills[2] = 1
-                treecmd()
-                treecmd()
-            elif 702 <= mpos.x <= 788 and 364 <= mpos.y <= 460 and skills[1] == 1 and skills[2] == 1:
-                skills[3] = 1
-                treecmd()
-                treecmd()
-            elif 906 <= mpos.x <= 997 and 55 <= mpos.y <= 151 and skills[3] == 1:
-                skills[4] = 1
-                treecmd()
-                treecmd()
-            elif 906 <= mpos.x <= 997 and 287 <= mpos.y <= 383 and skills[3] == 1:
-                skills[5] = 1
-                treecmd()
-                treecmd()
-            elif 906 <= mpos.x <= 997 and 519 <= mpos.y <= 615 and skills[3] == 1:
-                skills[6] = 1
-                treecmd()
-                treecmd()
-            elif 1052 <= mpos.x <= 1143 and 55 <= mpos.y <= 151 and skills[4] == 1:
-                skills[7] = 1
-                treecmd()
-                treecmd()
-            elif 1052 <= mpos.x <= 1143 and 171 <= mpos.y <= 267 and skills[4] == 1 and skills[5] == 1:
-                skills[8] = 1
-                treecmd()
-                treecmd()
-            elif 1052 <= mpos.x <= 1143 and 287 <= mpos.y <= 383 and skills[5] == 1:
-                skills[9] = 1
-                treecmd()
-                treecmd()
-            elif 1052 <= mpos.x <= 1143 and 403 <= mpos.y <= 499 and skills[11] == 1:
-                skills[10] = 1
-                treecmd()
-                treecmd()
-            elif 1052 <= mpos.x <= 1143 and 519 <= mpos.y <= 615 and skills[6] == 1:
-                skills[11] = 1
-                treecmd()
-                treecmd()
-
+            treeButtonReqFlag = False
+            for i in range(len(treeButtons)):
+                if treeButtons[i][0][0] <= mpos.x <= treeButtons[i][0][1] and treeButtons[i][0][2] <= mpos.y <= treeButtons[i][0][3]:
+                    for n in treeButtons[i][1]:
+                        if skills[n] != 1:
+                            treeButtonReqFlag = True
+                            break
+                    if treeButtonReqFlag:
+                        break
+                    skills[i] = 1
+                    treecmd()
+                    treecmd()
+                    
 root.bind('<Button-1>', hitbox)
 root.mainloop()
