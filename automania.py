@@ -58,6 +58,7 @@ sqrlight = tk.PhotoImage(file = scriptdir + 'txr\\sqrlight.png')
 sqrtall = tk.PhotoImage(file = scriptdir + 'txr\\sqrtall.png')
 sqrcoolant = tk.PhotoImage(file = scriptdir + 'txr\\sqrcoolant.png')
 tick = tk.PhotoImage(file = scriptdir + 'txr\\tick.png')
+treebuttons = {0 : ((342, 571), (sqrlight, smelter)), 1 : ((576, 223), (sqrtall,)), 2 : ((576, 571), (sqrlight, press)), 3 : ((750, 416), (sqrcoolant,)), 4 : ((954, 107), (sqrlight, arm1)), 5 : ((954, 339), (sqrlight,)), 6 : ((954, 571), (sqrlight,)), 7 : ((1100, 107), (sqrlight,)), 8 : ((1100, 223), (sqrlight,)), 9 : ((1100, 339), (sqrlight,)), 10 : ((1100, 451), (sqrlight,)), 11 : ((1100, 571), (sqrlight,))}
 
 #buttons
 settingscircle = tk.PhotoImage(file = scriptdir + 'txr\\settingscircle.png')
@@ -82,40 +83,17 @@ def settingscmd():
     else:
         canvas.delete('menu')
 def treecmd():
-    global menuopen, skills
+    global menuopen, skills, treebuttons
     if menuopen == 0:
         menuopen = 2
     else:
         menuopen = 0
     if menuopen == 2:
         canvas.create_image(750, 338, image = treemenu, tags = 'menu')
-        if skills[0] == 1:
-            canvas.create_image(342, 571, image = sqrlight, tags = 'menu')
-            canvas.create_image(342, 571, image = smelter, tags = 'menu')
-        if skills[1] == 1:
-            canvas.create_image(576, 223, image = sqrtall, tags = 'menu')
-        if skills[2] == 1:
-            canvas.create_image(576, 571, image = sqrlight, tags = 'menu')
-            canvas.create_image(576, 571, image = press, tags = 'menu')
-        if skills[3] == 1:
-            canvas.create_image(750, 416, image = sqrcoolant, tags = 'menu')
-        if skills[4] == 1:
-            canvas.create_image(954, 107, image = sqrlight, tags = 'menu')
-            canvas.create_image(954, 107, image = arm1, tags = 'menu')
-        if skills[5] == 1:
-            canvas.create_image(954, 339, image = sqrlight, tags = 'menu')
-        if skills[6] == 1:
-            canvas.create_image(954, 571, image = sqrlight, tags = 'menu')
-        if skills[7] == 1:
-            canvas.create_image(1100, 107, image = sqrlight, tags = 'menu')
-        if skills[8] == 1:
-            canvas.create_image(1100, 223, image = sqrlight, tags = 'menu')
-        if skills[9] == 1:
-            canvas.create_image(1100, 339, image = sqrlight, tags = 'menu')
-        if skills[10] == 1:
-            canvas.create_image(1100, 451, image = sqrlight, tags = 'menu')
-        if skills[11] == 1:
-            canvas.create_image(1100, 571, image = sqrlight, tags = 'menu')
+        for i in range(len(treebuttons)):
+            if skills[i]:
+                for n in range(len(treebuttons[i][1])):
+                    canvas.create_image(treebuttons[i][0][0], treebuttons[i][0][1], image = treebuttons[i][1][n], tags = 'menu')
     else:
         canvas.delete('menu')
 def exitcmd():
