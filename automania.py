@@ -1,5 +1,4 @@
 import tkinter as tk
-from threading import *
 
 #variables
 scriptdir = __file__.replace(__file__.split('\\')[-1], '') #get the directory of the file
@@ -46,7 +45,7 @@ conveyor1 = tk.PhotoImage(file = scriptdir + 'txr\\conveyor1.png')
 arm1 = tk.PhotoImage(file = scriptdir + 'txr\\arm1.png')
 pipe = tk.PhotoImage(file = scriptdir + 'txr\\pipe.png')
 sell = tk.PhotoImage(file = scriptdir + 'txr\\sell.png')
-blocks = {1 : drill, 2 : smelter, 3 : press, 4 : sell, 5 : conveyor1, 6 : arm1, 7 : pipe, 8 : pump} #dict for blocks
+blocks = {0 : 0, 1 : drill, 2 : smelter, 3 : press, 4 : sell, 5 : conveyor1, 6 : arm1, 7 : pipe, 8 : pump} #dict for blocks
 delete = tk.PhotoImage(file = scriptdir + 'txr\\delete.png')
 lining = tk.PhotoImage(file = scriptdir + 'txr\\lining.png')
 parcel = tk.PhotoImage(file = scriptdir + 'txr\\parcel.png')
@@ -66,6 +65,7 @@ settingscircle = tk.PhotoImage(file = scriptdir + 'txr\\settingscircle.png')
 treecircle = tk.PhotoImage(file = scriptdir + 'txr\\treecircle.png')
 exitcircle = tk.PhotoImage(file = scriptdir + 'txr\\exitcircle.png')
 settingsmenu = tk.PhotoImage(file = scriptdir + 'txr\\settingsmenu.png')
+blockButtons = {delete : (1000, 750, 0), drill : (600, 710, 1), smelter : (700, 710, 2), press : (800, 710, 3), sell : (900, 710, 4), conveyor1 : (600, 790, 5), arm1 : (700, 790, 6), pipe : (800, 790, 7), pump : (900, 790, 8)}
 #endregion
 
 #region buttons
@@ -97,66 +97,17 @@ def treecmd():
                     canvas.create_image(treeimgs[i][0][0], treeimgs[i][0][1], image = treeimgs[i][1][n], tags = 'menu')
     else:
         canvas.delete('menu')
-def exitcmd():
-    root.destroy()
-def drillbuttoncmd():
+def buttoncmd(i):
     global placement
-    placement = 1
     canvas.delete('bganim')
-    canvas.create_image(600, 710, image = lining, tags = 'bganim')
-def smelterbuttoncmd():
-    global placement
-    placement = 2
-    canvas.delete('bganim')
-    canvas.create_image(700, 710, image = lining, tags = 'bganim')
-def pressbuttoncmd():
-    global placement
-    placement = 3
-    canvas.delete('bganim')
-    canvas.create_image(800, 710, image = lining, tags = 'bganim')
-def sellbuttoncmd():
-    global placement
-    placement = 4
-    canvas.delete('bganim')
-    canvas.create_image(900, 710, image = lining, tags = 'bganim')
-def conveyorbuttoncmd():
-    global placement
-    placement = 5
-    canvas.delete('bganim')
-    canvas.create_image(600, 790, image = lining, tags = 'bganim')
-def armbuttoncmd():
-    global placement
-    placement = 6
-    canvas.delete('bganim')
-    canvas.create_image(700, 790, image = lining, tags = 'bganim')
-def pipebuttoncmd():
-    global placement
-    placement = 7
-    canvas.delete('bganim')
-    canvas.create_image(800, 790, image = lining, tags = 'bganim')
-def pumpbuttoncmd():
-    global placement
-    placement = 8
-    canvas.delete('bganim')
-    canvas.create_image(900, 790, image = lining, tags = 'bganim')
-def deletebuttoncmd():
-    global placement
-    placement = 0
-    canvas.delete('bganim')
-    canvas.create_image(1000, 750, image = lining, tags = 'bganim')
+    placement = blockButtons[i][2]
+    canvas.create_image(blockButtons[i][0], blockButtons[i][1], image = lining, tags = 'bganim')
+for i in blockButtons:
+    canvas.create_window(blockButtons[i][0], blockButtons[i][1], window = tk.Button(root, image = i, command = lambda i=i: buttoncmd(i), bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
 
 canvas.create_window(1400, 800, window = tk.Button(root, image = settingscircle, command = settingscmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
 canvas.create_window(100, 800, window = tk.Button(root, image = treecircle, command = treecmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
-canvas.create_window(100, 100, window = tk.Button(root, image = exitcircle, command = exitcmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
-canvas.create_window(600, 710, window = tk.Button(root, image = drill, command = drillbuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
-canvas.create_window(700, 710, window = tk.Button(root, image = smelter, command = smelterbuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
-canvas.create_window(800, 710, window = tk.Button(root, image = press, command = pressbuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
-canvas.create_window(900, 710, window = tk.Button(root, image = sell, command = sellbuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
-canvas.create_window(600, 790, window = tk.Button(root, image = conveyor1, command = conveyorbuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
-canvas.create_window(700, 790, window = tk.Button(root, image = arm1, command = armbuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
-canvas.create_window(800, 790, window = tk.Button(root, image = pipe, command = pipebuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
-canvas.create_window(900, 790, window = tk.Button(root, image = pump, command = pumpbuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
-canvas.create_window(1000, 750, window = tk.Button(root, image = delete, command = deletebuttoncmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
+canvas.create_window(100, 100, window = tk.Button(root, image = exitcircle, command = lambda: root.destroy(), bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
 #endregion
 
 #fg
