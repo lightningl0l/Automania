@@ -16,7 +16,8 @@ root = tk.Tk()
 root.resizable(False, False)
 root.title('Automania')
 root.iconbitmap(scriptdir + 'txr\\icon.ico')
-canvas = tk.Canvas(root, width = 1500, height = 900, bg = '#8b9098')
+root.geometry('1500x900+' + str(root.winfo_screenwidth() // 2 - 750) + '+' + str(root.winfo_screenheight() // 2 - 481)) #centres the screen
+canvas = tk.Canvas(root, width = 1500, height = 900, bg = '#8b9098', highlightthickness = 1)
 canvas.pack()
 
 #region images
@@ -79,6 +80,9 @@ def settingscmd():
         menuopen = 0
     if menuopen == 1:
         canvas.create_image(750, 450, image = settingsmenu, tags = 'menu')
+        canvas.create_image(530, 421, image = delete, tags = ('menu'))
+        canvas.create_image(537, 567, image = delete, tags = ('menu'))
+        canvas.create_image(609, 567, image = delete, tags = ('menu'))
         if recipeson == True:
             canvas.create_image(530, 349, image = tick, tags = ('tick', 'menu'))
     else:
