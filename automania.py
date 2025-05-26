@@ -111,7 +111,7 @@ for i in blockButtons:
 
 canvas.create_window(1400, 800, window = tk.Button(root, image = settingscircle, command = settingscmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
 canvas.create_window(100, 800, window = tk.Button(root, image = treecircle, command = treecmd, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
-canvas.create_window(100, 100, window = tk.Button(root, image = exitcircle, command = lambda: root.destroy(), bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
+canvas.create_window(100, 100, window = tk.Button(root, image = exitcircle, command = root.destroy, bg = '#8b9098', bd = 0, activebackground = '#8b9098'))
 #endregion
 
 #fg
