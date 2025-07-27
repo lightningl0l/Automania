@@ -1,0 +1,56 @@
+{
+    "drill" : {
+        "image" : "drill.png",
+        "key" : 1,
+        "type" : "c"
+    },
+    "pump" : {
+        "image" : "pump.png",
+        "key" : 2,
+        "type" : "c"
+    },
+    "smelter" : {
+        "recipes" : {
+            "Co" : "Ci",
+            "Io" : "Ii",
+            "Po" : "Pi",
+            "Go" : "Gi",
+            "Ao" : "Ai"
+        },
+        "image" : "smelter.png",
+        "key" : 3,
+        "type" : "p"
+    },
+    "press" : {
+        "recipes" : {
+            "Ci" : "Cs",
+            "Ii" : "Is",
+            "Pi" : "Ps",
+            "Gi" : "Gs",
+            "Ai" : "As"
+        },
+        "image" : "press.png",
+        "key" : 4,
+        "type" : "p"
+    },
+    "conveyor" : {
+        "image" : "conveyor.png",
+        "key" : 5,
+        "type" : "m"
+    },
+    "arm" : {
+        "image" : "arm.png",
+        "key" : 6,
+        "type" : "m"
+    },
+    "pipe" : {
+        "image" : "pipe.png",
+        "key" : 7,
+        "type" : "m"
+    },
+    "sell" : {
+        "image" : "sell.png",
+        "key" : 8,
+        "type" : "p"
+    }
+}
