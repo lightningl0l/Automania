@@ -9,10 +9,10 @@ class Board():
         self.hei = dim[1]
 
         with open(D + world, 'r') as f:
-            cont = f.read().split('\n')
-            self.size = int(cont[0])
-            self.stuff = cont[1].split(' ')
-            self.ores = cont[2].split(' ')
+            self.cont = f.read().split('\n')
+            self.size = int(self.cont[0])
+            self.stuff = self.cont[1].split(' ')
+            self.ores = self.cont[2].split(' ')
         self.stuff = [list(i) for i in self.stuff]
         self.ores = [list(i) for i in self.ores]
         self.placement = -1
@@ -33,7 +33,6 @@ class Board():
         for i in self.all:
             self.imgs.append((tk.PhotoImage(file=D + '\\txr\\' + self.all[i]['image'])))
         self.bg = tk.PhotoImage(file=D + 'txr\\bg.png')
-        self.parcel = tk.PhotoImage(file=__file__.replace(__file__.split('\\')[-1], 'txr\\parcel.png'))
         self.OCols = {
             'C' : '#FF7F27', 'I' : '#4F332E', 'P' : '#7092BE',
             'G' : '#FFC90E', 'A' : '#B5E61D'}
