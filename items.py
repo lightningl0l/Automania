@@ -20,16 +20,26 @@ class Items():
             for n in range(self.b.size):
                 if self.b.ores[m][n] != '0':
                     if int(self.b.stuff[m][n]) in self.objs[0]:
-                        self.plate[m][n] = '1'
-                else: self.plate[m][n] = '0'
+                        self.plate[m][n] = self.b.ores[m][n]
+                if self.b.stuff[m][n] == '0': self.plate[m][n] = '0'
                 for i in self.b.all:
+                    if self.b.all[i]['key'] in self.objs[2] and self.b.all[i]['key'] == int(self.b.stuff[m][n]):
+                        if int(self.b.stuff[m][n]) in self.objs[2] and self.plate[m][n] != '0':
+                            if self.plate[m][n] in self.b.all[i]['recipes']:
+                                self.plate[m][n] = self.b.all[i]['recipes'][self.plate[m][n]]
+                            else: self.plate[m][n] = '0'
                     if self.b.all[i]['key'] in self.objs[1]:
                         if int(self.b.stuff[m][n]) == self.b.all[i]['key']:
                             for o in self.b.all[i]['pass']:
                                 try:
                                     if self.plate[m + o[0]][n + o[1]] != '0':
-                                            self.plate[m][n] = '1'
-                                except Exception: pass
+                                        self.plate[m][n] = self.plate[m + o[0]][n + o[1]]
+                                    if (int(self.b.stuff[m - o[0]][n - o[1]]) in self.objs[1] or\
+                                        int(self.b.stuff[m - o[0]][n - o[1]]) in self.objs[2]) and\
+                                        self.plate[m - o[0]][n - o[1]] in ('0', self.plate[m][n]) and\
+                                        self.plate[m][n] != '0':
+                                        self.plate[m - o[0]][n - o[1]] = self.plate[m][n]
+                                except IndexError: pass
     
         for m in range(self.b.size):
             for n in range(self.b.size):
@@ -37,6 +47,8 @@ class Items():
                     x = (m - n) * 32 + self.b.scrollx
                     y = (m + n) * 16 + self.b.scrolly
                     self.b.c.create_image(x, y, image=self.parcel, tags='board')
+                    self.b.c.create_text(x, y, text=self.plate[m][n],
+                                        fill='#000', font=('Consolas', 12))
 
 if __name__ == '__main__':
     import tkinter as tk
