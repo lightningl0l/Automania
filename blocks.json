@@ -11,11 +11,11 @@
     },
     "smelter" : {
         "recipes" : {
-            "Co" : "Ci",
-            "Io" : "Ii",
-            "Po" : "Pi",
-            "Go" : "Gi",
-            "Ao" : "Ai"
+            "C" : "Ci",
+            "I" : "Ii",
+            "P" : "Pi",
+            "G" : "Gi",
+            "A" : "Ai"
         },
         "image" : "smelter.png",
         "key" : 3,
@@ -34,21 +34,27 @@
         "type" : "p"
     },
     "conveyor" : {
+        "pass" : [[1, 0], [0, 1], [-1, 0], [0, -1]],
         "image" : "conveyor.png",
         "key" : 5,
         "type" : "m"
     },
     "arm" : {
+        "pass" : [[2, 0], [0, 2], [-2, 0], [0, -2]],
         "image" : "arm.png",
         "key" : 6,
         "type" : "m"
     },
     "pipe" : {
+        "pass" : [[1, 1], [1, -1], [-1, 1], [-1, -1]],
         "image" : "pipe.png",
         "key" : 7,
         "type" : "m"
     },
     "sell" : {
+        "recipes" : {
+
+        },
         "image" : "sell.png",
         "key" : 8,
         "type" : "p"
